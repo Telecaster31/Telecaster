@@ -13,9 +13,9 @@ if "filter_done" not in st.session_state:
 
 # 이미지 표시
 if st.session_state.filter_done:
-    st.image(success_image_url, width=100)
+    st.image(success_image_url)
 else:
-    st.image(initial_image_url, width=200)
+    st.image(initial_image_url)
 
 st.title("📂 마감 자료 자동화")
 uploaded_file = st.file_uploader("WMS 엑셀 파일을 업로드해주세요", type=["xlsx"])
