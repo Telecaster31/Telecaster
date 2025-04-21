@@ -20,7 +20,8 @@ else:
 st.title("📂 마감 자료 자동화")
 uploaded_file = st.file_uploader("WMS 엑셀 파일을 업로드해주세요", type=["xlsx"])
 
-if uploaded_file:
+# ✅ 최초 업로드 시에만 필터 처리 + rerun
+if uploaded_file and not st.session_state.filter_done:
     df = pd.read_excel(uploaded_file)
 
     # 필드 필터링
@@ -30,29 +31,31 @@ if uploaded_file:
         'Type of Order', 'Transport Time'
     ]
 
-    # 누락 컬럼 확인 및 경고
     missing_columns = [col for col in columns_to_keep if col not in df.columns]
     if missing_columns:
         st.warning(f"❗ 다음 컬럼이 누락되어 있어 제외되었습니다: {missing_columns}")
 
-    # 존재하는 컬럼만 필터링
     existing_columns = [col for col in columns_to_keep if col in df.columns]
     df = df[existing_columns]
 
-    # 'bolttech' 포함 행 제거
-    df = df[~df['Item Description'].astype(str).str.contains('bolttech', case=False, na=False)] if 'Item Description' in df.columns else df
+    if 'Item Description' in df.columns:
+        df = df[~df['Item Description'].astype(str).str.contains('bolttech', case=False, na=False)]
 
-    # '1'로 시작하는 15자리 SPO Ref. 1만 남기기
     if 'SPO Ref. 1' in df.columns:
-        pattern = r'^1\d{14}$'
-        df = df[df['SPO Ref. 1'].astype(str).str.match(pattern)]
+        df = df[df['SPO Ref. 1'].astype(str).str.match(r'^1\d{14}$')]
 
-    # 작업 성공 이미지 상태로 변경
+    # ✅ 상태 저장 후 rerun
     st.session_state.filter_done = True
+    st.session_state.filtered_df = df  # 결과도 같이 저장
+    st.experimental_rerun()  # 🔁 rerun — 여기까지만 실행되고 아래는 스킵됨
+
+# ✅ rerun 이후 표시
+if st.session_state.filter_done and "filtered_df" in st.session_state:
+    df = st.session_state.filtered_df
+
     st.success("✅ 필터링 완료! 아래에서 다운로드 하세요.")
     st.dataframe(df)
 
-    # 엑셀 변환 함수
     @st.cache_data
     def convert_df_to_xlsx(df):
         output = BytesIO()
@@ -62,7 +65,6 @@ if uploaded_file:
 
     xlsx_data = convert_df_to_xlsx(df)
 
-    # 다운로드 버튼
     st.download_button(
         label="📥 엑셀 다운로드 (xlsx)",
         data=xlsx_data,
