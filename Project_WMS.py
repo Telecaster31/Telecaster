@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
 import re
+from io import BytesIO
 
-st.title("📂 WMS 엑셀 필터링 툴")
+st.title("📂 마감 자료 자동화")
 
 uploaded_file = st.file_uploader("WMS 엑셀 파일을 업로드해주세요", type=["xlsx"])
 
@@ -27,13 +28,20 @@ if uploaded_file:
     st.success("✅ 필터링 완료! 아래에서 다운로드 하세요.")
     st.dataframe(df)
 
-    # 다운로드
+    # 엑셀 파일 변환
     @st.cache_data
-    def convert_df(df):
-        return df.to_excel(index=False, engine='openpyxl')
+    def convert_df_to_xlsx(df):
+        output = BytesIO()
+        with pd.ExcelWriter(output, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Filtered Data')
+        return output.getvalue()
 
+    xlsx_data = convert_df_to_xlsx(df)
+
+    # 다운로드 버튼
     st.download_button(
-        label="📥 엑셀 다운로드",
-        data=convert_df(df),
-        file_name="WMS_Filtered_Result.xlsx"
+        label="📥 엑셀 다운로드 (xlsx)",
+        data=xlsx_data,
+        file_name="WMS_Filtered_Result.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
