@@ -4,8 +4,8 @@ import re
 from io import BytesIO
 
 # 이미지 설정
-initial_image_url = "https://.../즐겁다.png"
-success_image_url = "https://.../마참내.png"
+initial_image_url = "https://mblogthumb-phinf.pstatic.net/MjAyMjA1MjNfNDgg/MDAxNjUzMjMzMjQwMzc3.XZDjgEUamZdHHJti0EwSn2l9nTveii3Hy_GIG50qZhAg.NZGNIKs6eFU_4aprDKbtjveO1oosVy0EpGh_aZgDgWwg.PNG.gummy27131/%EC%A6%90%EA%B2%81%EB%8B%A4.png?type=w800"
+success_image_url = "https://mblogthumb-phinf.pstatic.net/MjAyMjA1MjNfMTQx/MDAxNjUzMjMzMjQwMzc5.g9-1_bp8xbOR1rEMPxIGYU-WwmOlLewMkESXkUtj5oUg.YWptYzAKEWOzR1tiqfjUguttGBPWcCz7e_zUasgXdaog.PNG.gummy27131/%EB%A7%88%EC%B0%B8%EB%82%B4.png?type=w800"
 
 # 상태 초기화
 if "filter_done" not in st.session_state:
@@ -49,7 +49,7 @@ if uploaded_file and not st.session_state.filter_done:
         # ✅ 안전하게 저장
         st.session_state.filtered_df = df
         st.session_state.filter_done = True
-        st.experimental_rerun()
+        st.rerun()
 
     except Exception as e:
         st.error(f"❌ 처리 중 오류 발생: {e}")
