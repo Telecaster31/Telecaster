@@ -6,7 +6,7 @@ from io import BytesIO
 # 이미지 설정
 initial_image_url = "https://mblogthumb-phinf.pstatic.net/MjAyMjA1MjNfNDgg/MDAxNjUzMjMzMjQwMzc3.XZDjgEUamZdHHJti0EwSn2l9nTveii3Hy_GIG50qZhAg.NZGNIKs6eFU_4aprDKbtjveO1oosVy0EpGh_aZgDgWwg.PNG.gummy27131/%EC%A6%90%EA%B2%81%EB%8B%A4.png?type=w800"  # 기존 그대로
 success_image_url = "https://mblogthumb-phinf.pstatic.net/MjAyMjA1MjNfMTQx/MDAxNjUzMjMzMjQwMzc5.g9-1_bp8xbOR1rEMPxIGYU-WwmOlLewMkESXkUtj5oUg.YWptYzAKEWOzR1tiqfjUguttGBPWcCz7e_zUasgXdaog.PNG.gummy27131/%EB%A7%88%EC%B0%B8%EB%82%B4.png?type=w800"  # 기존 그대로
-failure_image_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8oTnIoFnuuX9xm0-wWcM7-TE3sL4Q0HCQqiqG7bwO2T9hlaJLqcwPfJ3PTOxRWMMIQYA&usqp=CAU"  # 실패용 이미지 URL 추가
+failure_image_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8oTnIoFnuuX9xm0-wWcM7-TE3sL4Q0HCQqiqG7bwO2T9hlaJLqcwPfJ3PTOxRWMMIQYA&usqp=CAU?type=w800"  # 실패용 이미지 URL 추가
 
 # 상태 초기화
 if "filter_done" not in st.session_state:
