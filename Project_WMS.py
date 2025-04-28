@@ -18,7 +18,7 @@ if "filtered_df" not in st.session_state:
 
 # 이미지 출력
 if st.session_state.filter_failed:
-    st.image(failure_image_url, width=300)
+    st.image(failure_image_url, width=250)
 elif st.session_state.filter_done:
     st.image(success_image_url, width=300)
 else:
