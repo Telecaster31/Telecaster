@@ -33,9 +33,9 @@ if uploaded_file and not st.session_state.filter_done:
         df = pd.read_excel(uploaded_file)
 
         if df.empty:
-            st.error("❌ 업로드된 파일에 유효한 데이터가 없습니다.")
+            st.error("❌ 오류 발생! 파일을 다시 확인해주세요.")
             st.session_state.filter_failed = True
-            st.stop()
+            st.rerun()
 
         columns_to_keep = [
             'SPO Ref. 1', 'Contact', 'Tel', 'Address Line 1',
