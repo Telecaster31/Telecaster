@@ -47,7 +47,7 @@ if uploaded_file and not st.session_state.filter_done:
         if len(missing_columns) == len(columns_to_keep):
             st.error("❌ 필요한 모든 컬럼이 없습니다. 파일을 확인해 주세요.")
             st.session_state.filter_failed = True
-            st.stop()
+            st.rerun()
 
         df = df[[col for col in columns_to_keep if col in df.columns]]
 
@@ -60,7 +60,7 @@ if uploaded_file and not st.session_state.filter_done:
         if df.empty:
             st.error("❌ 필터링 결과 데이터가 없습니다.")
             st.session_state.filter_failed = True
-            st.stop()
+            st.rerun()
 
         # ✅ 안전하게 저장
         st.session_state.filtered_df = df
@@ -71,7 +71,7 @@ if uploaded_file and not st.session_state.filter_done:
     except Exception as e:
         st.error(f"❌ 처리 중 오류 발생: {e}")
         st.session_state.filter_failed = True
-        st.stop()
+        st.rerun()
 
 # 결과 출력
 if st.session_state.filter_done and st.session_state.filtered_df is not None:
