@@ -1,7 +1,7 @@
 from speechbrain.inference.speaker import SpeakerRecognition
 
-file1 = "C:/Users/DeokHwangbo/Downloads/Project_echo/LEE_voice_separated_Ref.wav"
-file2 = "C:/Users/DeokHwangbo/Downloads/Project_echo/KangSY_Lee_separate.wav"
+file1 = "C:/Users/DeokHwangbo/Downloads/Project_echo/Case_제이와이제이/김종찬 기준2(분리).wav"
+file2 = "C:/Users/DeokHwangbo/Downloads/Project_echo/Case_제이와이제이/디스커넥트 직원 김경민(분리).wav"
 
 # Load the model
 model = SpeakerRecognition.from_hparams(
