@@ -1,22 +1,25 @@
-import streamlit as st
-import pandas as pd
-import re
-from io import BytesIO
-
 # 이미지 설정
-initial_image_url = "https://mblogthumb-phinf.pstatic.net/MjAyMjA1MjNfNDgg/MDAxNjUzMjMzMjQwMzc3.XZDjgEUamZdHHJti0EwSn2l9nTveii3Hy_GIG50qZhAg.NZGNIKs6eFU_4aprDKbtjveO1oosVy0EpGh_aZgDgWwg.PNG.gummy27131/%EC%A6%90%EA%B2%81%EB%8B%A4.png?type=w800"
-success_image_url = "https://mblogthumb-phinf.pstatic.net/MjAyMjA1MjNfMTQx/MDAxNjUzMjMzMjQwMzc5.g9-1_bp8xbOR1rEMPxIGYU-WwmOlLewMkESXkUtj5oUg.YWptYzAKEWOzR1tiqfjUguttGBPWcCz7e_zUasgXdaog.PNG.gummy27131/%EB%A7%88%EC%B0%B8%EB%82%B4.png?type=w800"
+initial_image_url = "https://mblogthumb-phinf.pstatic.net/MjAyMjA1MjNfNDgg/MDAxNjUzMjMzMjQwMzc3.XZDjgEUamZdHHJti0EwSn2l9nTveii3Hy_GIG50qZhAg.NZGNIKs6eFU_4aprDKbtjveO1oosVy0EpGh_aZgDgWwg.PNG.gummy27131/%EC%A6%90%EA%B2%81%EB%8B%A4.png?type=w800"  # 기존 그대로
+success_image_url = "https://mblogthumb-phinf.pstatic.net/MjAyMjA1MjNfMTQx/MDAxNjUzMjMzMjQwMzc5.g9-1_bp8xbOR1rEMPxIGYU-WwmOlLewMkESXkUtj5oUg.YWptYzAKEWOzR1tiqfjUguttGBPWcCz7e_zUasgXdaog.PNG.gummy27131/%EB%A7%88%EC%B0%B8%EB%82%B4.png?type=w800"  # 기존 그대로
+failure_image_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8oTnIoFnuuX9xm0-wWcM7-TE3sL4Q0HCQqiqG7bwO2T9hlaJLqcwPfJ3PTOxRWMMIQYA&usqp=CAU"  # 실패용 이미지 URL 추가
 
 # 상태 초기화
 if "filter_done" not in st.session_state:
     st.session_state.filter_done = False
+if "filter_failed" not in st.session_state:
+    st.session_state.filter_failed = False
 if "filtered_df" not in st.session_state:
     st.session_state.filtered_df = None
 
 # 이미지 출력
-st.image(success_image_url if st.session_state.filter_done else initial_image_url, width=300)
-st.title("📂 마감 자료 자동화")
+if st.session_state.filter_failed:
+    st.image(failure_image_url, width=300)
+elif st.session_state.filter_done:
+    st.image(success_image_url, width=300)
+else:
+    st.image(initial_image_url, width=300)
 
+st.title("📂 마감 자료 자동화")
 uploaded_file = st.file_uploader("WMS 엑셀 파일을 업로드해주세요", type=["xlsx"])
 
 # 최초 업로드 시 필터 처리
@@ -26,6 +29,7 @@ if uploaded_file and not st.session_state.filter_done:
 
         if df.empty:
             st.error("❌ 업로드된 파일에 유효한 데이터가 없습니다.")
+            st.session_state.filter_failed = True
             st.stop()
 
         columns_to_keep = [
@@ -35,8 +39,10 @@ if uploaded_file and not st.session_state.filter_done:
         ]
 
         missing_columns = [col for col in columns_to_keep if col not in df.columns]
-        if missing_columns:
-            st.warning(f"❗ 다음 컬럼이 누락되어 있어 제외되었습니다: {missing_columns}")
+        if len(missing_columns) == len(columns_to_keep):
+            st.error("❌ 필요한 모든 컬럼이 없습니다. 파일을 확인해 주세요.")
+            st.session_state.filter_failed = True
+            st.stop()
 
         df = df[[col for col in columns_to_keep if col in df.columns]]
 
@@ -46,13 +52,20 @@ if uploaded_file and not st.session_state.filter_done:
         if 'SPO Ref. 1' in df.columns:
             df = df[df['SPO Ref. 1'].astype(str).str.match(r'^1\d{14}$')]
 
+        if df.empty:
+            st.error("❌ 필터링 결과 데이터가 없습니다.")
+            st.session_state.filter_failed = True
+            st.stop()
+
         # ✅ 안전하게 저장
         st.session_state.filtered_df = df
         st.session_state.filter_done = True
+        st.session_state.filter_failed = False
         st.rerun()
 
     except Exception as e:
         st.error(f"❌ 처리 중 오류 발생: {e}")
+        st.session_state.filter_failed = True
         st.stop()
 
 # 결과 출력
