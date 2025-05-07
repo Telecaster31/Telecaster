@@ -27,6 +27,9 @@ else:
 st.title("📂 마감 자료 자동화")
 uploaded_file = st.file_uploader("WMS 엑셀 파일을 업로드해주세요", type=["xlsx"])
 
+# 🔔 경고 문구 삽입
+st.warning("⚠️ **주의사항:** WMS 파일이 한글 버전일 경우 프로그램이 인식하지 못합니다.\n오류가 발생할 경우 **영문 버전**인지 다시 한 번 확인해주세요!")
+
 # 최초 업로드 시 필터 처리
 if uploaded_file and not st.session_state.filter_done:
     try:
